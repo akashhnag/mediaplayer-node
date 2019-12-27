@@ -101,36 +101,7 @@ app.post('/convert', (req, res) => {
 
 })
 
-function frameNoDuration(req, res) {
-    console.log('else part');
 
-    let screenshot = new ffmpeg({ source: `uploads/${latestVideo}` })
-        .takeScreenshots(parseInt(req.body.frames), 'images/');
-    screenshot.on('end', () => {
-        console.log('screenshot completed');
-        const directoryPath = path.join(__dirname, 'images');
-        //passsing directoryPath and callback function
-        fs.readdir(directoryPath, function (err, files) {
-            //handling error
-            if (err) {
-                return console.log('Unable to scan directory: ' + err);
-            }
-            //listing all files using forEach
-            filenames = files.map(function (file) {
-                // Do whatever you want to do with the file
-                if (file !== '.DS_Store') {
-                    return defaultName(file);
-                }
-
-            });
-            console.log('filnames', filenames);
-            res.status(200).json({
-                message: 'Frames taken',
-                filenames: filenames
-            });
-        });
-    })
-}
 
 
 
@@ -415,6 +386,37 @@ function screenshot() {
         .seek(`0:10`)
         .duration(`0:07`)
         .screenshots({ count: 7, folder: 'images/' })
+}
+
+function frameNoDuration(req, res) {
+    console.log('else part');
+
+    let screenshot = new ffmpeg({ source: `uploads/${latestVideo}` })
+        .takeScreenshots(parseInt(req.body.frames), 'images/');
+    screenshot.on('end', () => {
+        console.log('screenshot completed');
+        const directoryPath = path.join(__dirname, 'images');
+        //passsing directoryPath and callback function
+        fs.readdir(directoryPath, function (err, files) {
+            //handling error
+            if (err) {
+                return console.log('Unable to scan directory: ' + err);
+            }
+            //listing all files using forEach
+            filenames = files.map(function (file) {
+                // Do whatever you want to do with the file
+                if (file !== '.DS_Store') {
+                    return defaultName(file);
+                }
+
+            });
+            console.log('filnames', filenames);
+            res.status(200).json({
+                message: 'Frames taken',
+                filenames: filenames
+            });
+        });
+    })
 }
 
 //screenshot();
